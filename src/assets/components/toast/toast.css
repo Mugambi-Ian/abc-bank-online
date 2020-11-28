@@ -15,8 +15,7 @@
   margin: 20px auto;
   text-align: center;
   color: white;
-  background-color: #494949;
-  border-radius: 5px;
+  background-color: #000000;
   max-width: 600px;
   min-width: 150px;
   max-height: 40px;
@@ -44,7 +43,7 @@
 .slide-up {
   animation-timing-function: ease;
   animation-iteration-count: 1;
-  animation: slide-up-anim 0.5s;
+  animation: fade-in 0.5s;
 }
 
 @keyframes slide-out-anim {

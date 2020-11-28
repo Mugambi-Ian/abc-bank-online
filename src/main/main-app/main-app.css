@@ -15,9 +15,9 @@
   height: 100%;
   width: 100%;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   animation: fade-in ease-in 0.5s;
+  background-color: #bdbdbd;
 }
 
 p.title {
@@ -36,7 +36,7 @@ p.sub-title {
   margin-bottom: 10px;
 }
 img.logo {
-  height: 70px;
+  height: 150px;
   object-fit: contain;
   margin-bottom: 20px;
 }
@@ -44,8 +44,7 @@ img.logo {
 .pin-pad {
   width: 100%;
   display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 .pin-pad .pad {
   align-self: center;
@@ -60,7 +59,7 @@ img.logo {
   padding: 10px;
   width: 350px;
   height: 60px;
-  background-color: #494949;
+  background-color: #e4e4e4;
   border-radius: 10px;
   justify-content: center;
   flex-direction: column;
@@ -69,7 +68,7 @@ img.logo {
 
 .circle h3 {
   text-align: center;
-  color: #ffffff;
+  color: #5e5e5e;
   font-weight: 800;
   margin: 0;
   align-self: center;
@@ -89,11 +88,11 @@ img.logo {
 .input-pad .pad {
   max-width: 400px;
   max-height: 400px;
-  width: 90%;
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-self: center;
 }
 
 .pad .line {
@@ -101,33 +100,37 @@ img.logo {
   height: 80%;
   width: 100%;
   flex: 1;
+  align-self: center;
+  justify-content: center;
 }
 .line p {
   margin: 0;
   font-weight: 800;
-  border-radius: 5px;
-  background-color: rgb(89, 166, 172);
-  color: #494949;
-  text-align: center;
+  max-width: 80px;
+  border-radius: 100px;
+  background-color: rgb(0, 0, 0);
+  color: #f3f3f3;
   margin: 5px;
-  padding: 2%;
   flex: 1;
   align-self: center;
+  text-align: center;
+  padding-top: 30px;
+  padding-bottom: 30px;
 }
 .line p:hover {
   background-color: #494949;
   color: #fff;
 }
 .line p:active {
-  background-color: #fff;
-  color: #747474;
+  background-color: rgb(247, 247, 247);
+  color: #363636;
 }
 
 .options {
   position: fixed;
   right: 0px;
   display: flex;
-  bottom:  10px;
+  bottom: 10px;
   max-width: 450px;
   flex-wrap: wrap;
   flex-direction: row-reverse;
@@ -145,4 +148,3 @@ img.logo {
   margin: 5px;
   background-color: #fff;
 }
-

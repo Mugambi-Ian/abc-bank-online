@@ -35,6 +35,10 @@ export default class ManageUsers extends Component {
         ) : (
           <div className="accounts-list">
             {this.state.accounts.map((x, i) => {
+              var bal = 0;
+              if (x.customerBalance) {
+                bal = x.customerBalance;
+              }
               return (
                 <div className="account-card">
                   <img
@@ -45,15 +49,6 @@ export default class ManageUsers extends Component {
                     className="unselectable"
                   />
                   <p className="name unselectable">{x.customerName}</p>
-                  <p className="status unselectable">
-                    {x.customerStatus === true ? "active" : "Deactivated"}
-                  </p>
-                  <p className="date unselectable">
-                    Registered on: {x.createdOn}
-                  </p>
-                  <p className="date unselectable">
-                    Account Balance: {parseInt(x.customerBalance) + 0}
-                  </p>
                   <div className="card-options">
                     <p
                       className="unselectable"
@@ -127,6 +122,11 @@ export default class ManageUsers extends Component {
                       View Transactions
                     </p>
                   </div>
+                  <p className="date unselectable">{x.customerId}</p>
+                  <p className="date unselectable">Account Balance: {bal}</p>
+                  <p className="status unselectable">
+                    {x.customerStatus === true ? "active" : "Deactivated"}
+                  </p>
                 </div>
               );
             })}
@@ -190,12 +190,13 @@ class EditCustomer extends Component {
         customerName: "",
         customerStatus: "",
         createdOn: "",
+        customerBalance: "",
       };
       const k = await _database.ref("pipelines").push();
       x.customerId = k.key;
       const _d = new Date();
       const d =
-        _d.getFullYear() + "-" + (_d.getMonth() + 1) + "-" + _d.getDate();
+        _d.getDate() + "-" + (_d.getMonth() + 1) + "-" + _d.getFullYear();
       x.createdOn = d;
     } else {
       this.setState({ registered: true });
@@ -207,16 +208,16 @@ class EditCustomer extends Component {
           customerName,
           customerStatus,
           createdOn,
-          phoneNumber,
           address,
+          customerBalance,
         } = data.val();
         const p = {
           customerId: customerId,
           customerName: customerName,
           customerStatus: customerStatus,
-          phoneNumber: phoneNumber,
           address: address,
           createdOn: createdOn,
+          customerBalance: customerBalance,
         };
         this.setState({ customer: p });
       } else {
@@ -224,9 +225,9 @@ class EditCustomer extends Component {
           customerId: x.customerId,
           customerName: "",
           customerStatus: true,
-          phoneNumber: "",
           address: "",
           createdOn: x.createdOn,
+          customerBalance: 0,
         };
         this.setState({ customer: p });
       }
@@ -237,204 +238,203 @@ class EditCustomer extends Component {
   }
   render() {
     return (
-      <div
-        className={
-          this.state.exit === false
-            ? "edit-customer-body start"
-            : "edit-customer-body exit"
-        }
-      >
-        {this.state.loading === true ? (
-          <Loader />
-        ) : (
-          <div
-            style={{
-              display: "flex",
-              flex: 1,
-              flexDirection: "column",
-              minHeight: "100%",
-              animation: "fade-in ease-in 0.3s",
-            }}
-          >
+      <div className="pop-up-body">
+        <div
+          className={
+            this.state.exit === false
+              ? "edit-customer-body start"
+              : "edit-customer-body exit"
+          }
+        >
+          {this.state.loading === true ? (
+            <Loader />
+          ) : (
             <div
               style={{
                 display: "flex",
+                flex: 1,
                 flexDirection: "column",
-                flex: "1",
-                minHeight: "80%",
+                minHeight: "100%",
+                animation: "fade-in ease-in 0.3s",
               }}
             >
-              <p
-                className="btn close unselectable"
-                onClick={async () => {
-                  await setTimeout(() => {
-                    this.setState({ exit: true });
-                    this.props.close();
-                  }, 100);
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  flex: "1",
+                  minHeight: "80%",
                 }}
               >
-                Close
-              </p>
-              <h3 className="customer-title unselectable">
-                {this.state.customer.customerName
-                  ? this.state.customer.customerName
-                  : "Create new customer"}
-              </h3>
-              <div className="field">
-                <img
-                  alt=""
-                  draggable={false}
-                  src={
-                    require("../../../assets/drawables/calendar.png").default
-                  }
-                  className="unselectable"
-                />
-                <p className="field-title">Registered On</p>
-                <input disabled={true} value={this.state.customer.createdOn} />
+                <h3 className="customer-title unselectable">
+                  {this.state.customer.customerName
+                    ? this.state.customer.customerName
+                    : "New customer"}
+                </h3>
+                <div className="field">
+                  <img
+                    alt=""
+                    draggable={false}
+                    src={
+                      require("../../../assets/drawables/calendar.png").default
+                    }
+                    className="unselectable"
+                  />
+                  <p className="field-title">Registration date</p>
+                  <input
+                    disabled={true}
+                    value={this.state.customer.createdOn}
+                  />
+                </div>
+                <div className="field">
+                  <img
+                    alt=""
+                    draggable={false}
+                    src={require("../../../assets/drawables/id.png").default}
+                    className="unselectable"
+                  />
+                  <p className="field-title">Account Id</p>
+                  <input
+                    value={this.state.customer.customerId}
+                    disabled={true}
+                  />
+                </div>
+                <div className="field">
+                  <img
+                    alt=""
+                    draggable={false}
+                    src={require("../../../assets/drawables/name.png").default}
+                    className="unselectable"
+                  />
+                  <p className="field-title">Name</p>
+                  <input
+                    value={this.state.customer.customerName}
+                    onChange={(_) => {
+                      const x = this.state.customer;
+                      x.customerName = _.target.value;
+                      this.setState({ customer: x });
+                    }}
+                    placeholder="Customer Name"
+                    name="customerName"
+                  />
+                </div>
+                <div className="field">
+                  <img
+                    alt=""
+                    draggable={false}
+                    src={
+                      require("../../../assets/drawables/address.png").default
+                    }
+                    className="unselectable"
+                  />
+                  <p className="field-title">Address</p>
+                  <input
+                    value={this.state.customer.address}
+                    onChange={(_) => {
+                      const x = this.state.customer;
+                      x.address = _.target.value;
+                      this.setState({ customer: x });
+                    }}
+                    placeholder="Address"
+                    name="address"
+                  />
+                </div>
+                <h3 className="customer-sub-title unselectable">
+                  Customer Status
+                </h3>
+                <div className="status-options">
+                  <p
+                    className={
+                      this.state.customer.customerStatus === true
+                        ? "select unselectable"
+                        : "unselectable"
+                    }
+                    onClick={async () => {
+                      await setTimeout(() => {
+                        if (this.state.registered === true) {
+                          const x = this.state.customer;
+                          x.customerStatus = true;
+                          this.setState({ customer: x });
+                        }
+                      }, 100);
+                    }}
+                  >
+                    Active
+                  </p>
+                  <p
+                    className={
+                      this.state.customer.customerStatus !== true
+                        ? "select unselectable"
+                        : "unselectable"
+                    }
+                    onClick={async () => {
+                      await setTimeout(() => {
+                        if (this.state.registered === true) {
+                          const x = this.state.customer;
+                          x.customerStatus = false;
+                          this.setState({ customer: x });
+                        }
+                      }, 100);
+                    }}
+                  >
+                    Disconnected
+                  </p>
+                </div>
               </div>
-              <div className="field">
-                <img
-                  alt=""
-                  draggable={false}
-                  src={require("../../../assets/drawables/id.png").default}
-                  className="unselectable"
-                />
-                <p className="field-title">Customer Id</p>
-                <input value={this.state.customer.customerId} disabled={true} />
-              </div>
-              <div className="field">
-                <img
-                  alt=""
-                  draggable={false}
-                  src={require("../../../assets/drawables/name.png").default}
-                  className="unselectable"
-                />
-                <p className="field-title">Customer Name</p>
-                <input
-                  value={this.state.customer.customerName}
-                  onChange={(_) => {
-                    const x = this.state.customer;
-                    x.customerName = _.target.value;
-                    this.setState({ customer: x });
-                  }}
-                  placeholder="Customer Name"
-                  name="customerName"
-                />
-              </div>
-              <div className="field">
-                <img
-                  alt=""
-                  draggable={false}
-                  src={require("../../../assets/drawables/address.png").default}
-                  className="unselectable"
-                />
-                <p className="field-title">Address</p>
-                <input
-                  value={this.state.customer.address}
-                  onChange={(_) => {
-                    const x = this.state.customer;
-                    x.address = _.target.value;
-                    this.setState({ customer: x });
-                  }}
-                  placeholder="Address"
-                  name="address"
-                />
-              </div>
-              <div className="field">
-                <img
-                  alt=""
-                  draggable={false}
-                  src={require("../../../assets/drawables/phone.png").default}
-                  className="unselectable"
-                />
-                <p className="field-title">Phone-Number</p>
-                <input
-                  value={this.state.customer.phoneNumber}
-                  onChange={(_) => {
-                    const x = this.state.customer;
-                    x.phoneNumber = _.target.value;
-                    this.setState({ customer: x });
-                  }}
-                  placeholder="Phone Number"
-                  name="customerPhone"
-                />
-              </div>
-              <h3 className="customer-sub-title unselectable">
-                Customer Status
-              </h3>
-              <div className="status-options">
+              <div
+                style={{
+                  display: "flex",
+                  alignSelf: "center",
+                  marginBottom: "10px",
+                }}
+              >
                 <p
-                  className={
-                    this.state.customer.customerStatus === true
-                      ? "select unselectable"
-                      : "unselectable"
-                  }
+                  className="btn unselectable"
+                  onClick={async () => {
+                    var {
+                      customerId,
+                      customerName,
+                      customerStatus,
+                      createdOn,
+                      address,
+                      customerBalance,
+                    } = this.state.customer;
+                    if (customerBalance === undefined) customerBalance = 0;
+                    const p = {
+                      customerId: customerId,
+                      customerName: customerName,
+                      customerStatus: customerStatus,
+                      address: address,
+                      createdOn: createdOn,
+                      customerBalance: customerBalance,
+                    };
+                    await _database
+                      .ref("customers/" + p.customerId)
+                      .set(p)
+                      .then((c) => {
+                        this.props.showTimedToast("Save Succeffull");
+                        this.props.close();
+                      });
+                  }}
+                >
+                  Save
+                </p>
+                <p
+                  className="btn unselectable"
                   onClick={async () => {
                     await setTimeout(() => {
-                      if (this.state.registered === true) {
-                        const x = this.state.customer;
-                        x.customerStatus = true;
-                        this.setState({ customer: x });
-                      }
+                      this.setState({ exit: true });
+                      this.props.close();
                     }, 100);
                   }}
                 >
-                  Active
+                  Close
                 </p>
-                <p
-                  className={
-                    this.state.customer.customerStatus !== true
-                      ? "select unselectable"
-                      : "unselectable"
-                  }
-                  onClick={async () => {
-                    await setTimeout(() => {
-                      if (this.state.registered === true) {
-                        const x = this.state.customer;
-                        x.customerStatus = false;
-                        this.setState({ customer: x });
-                      }
-                    }, 100);
-                  }}
-                >
-                  Disconnected
-                </p>
+                <div style={{ marginTop: "10px" }} />
               </div>
             </div>
-            <p
-              className="btn unselectable"
-              onClick={async () => {
-                const {
-                  customerId,
-                  customerName,
-                  customerStatus,
-                  createdOn,
-                  phoneNumber,
-                  address,
-                } = this.state.customer;
-                const p = {
-                  customerId: customerId,
-                  customerName: customerName,
-                  customerStatus: customerStatus,
-                  phoneNumber: phoneNumber,
-                  address: address,
-                  createdOn: createdOn,
-                };
-
-                await _database
-                  .ref("customers/" + p.customerId)
-                  .set(p)
-                  .then((c) => {
-                    this.props.showTimedToast("Save Succeffull");
-                    this.props.close();
-                  });
-              }}
-            >
-              Save
-            </p>
-            <div style={{ marginTop: "10px" }} />
-          </div>
-        )}
+          )}
+        </div>
       </div>
     );
   }
@@ -461,142 +461,156 @@ class Transact extends Component {
   }
   render() {
     return (
-      <div
-        className={
-          this.state.exit === false
-            ? "transact-body start"
-            : "transact-body exit"
-        }
-      >
+      <div className="pop-up-body">
         <div
-          style={{
-            display: "flex",
-            flex: 1,
-            flexDirection: "column",
-            minHeight: "100%",
-            animation: "fade-in ease-in 0.3s",
-          }}
+          className={
+            this.state.exit === false
+              ? "transact-body start"
+              : "transact-body exit"
+          }
         >
           <div
             style={{
               display: "flex",
+              flex: 1,
               flexDirection: "column",
-              flex: "1",
-              minHeight: "80%",
+              minHeight: "100%",
+              animation: "fade-in ease-in 0.3s",
             }}
           >
-            <p
-              className="btn close unselectable"
-              onClick={async () => {
-                await setTimeout(() => {
-                  this.setState({ exit: true });
-                  this.props.close();
-                }, 100);
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                flex: "1",
+                minHeight: "80%",
               }}
             >
-              Close
-            </p>
-            <h3 className="customer-title unselectable">
-              {this.state.transactionType}
-            </h3>
-            <div className="field">
-              <img
-                alt=""
-                draggable={false}
-                src={require("../../../assets/drawables/calendar.png").default}
-                className="unselectable"
-              />
-              <p className="field-title">Transaction Date</p>
-              <input disabled={true} value={this.state.date} />
+              <h3 className="customer-title unselectable">
+                {this.state.transactionType}
+              </h3>
+              <div className="field">
+                <img
+                  alt=""
+                  draggable={false}
+                  src={
+                    require("../../../assets/drawables/calendar.png").default
+                  }
+                  className="unselectable"
+                />
+                <p className="field-title">Transaction Date</p>
+                <input disabled={true} value={this.state.date} />
+              </div>
+              <div className="field">
+                <img
+                  alt=""
+                  draggable={false}
+                  src={require("../../../assets/drawables/send.png").default}
+                  className="unselectable"
+                />
+                <p className="field-title">Amount</p>
+                <input
+                  value={this.state.transactionAmount}
+                  onChange={(_) => {
+                    this.setState({
+                      transactionAmount: parseInt("0" + _.target.value),
+                    });
+                  }}
+                  placeholder="Amount"
+                  name="Amount"
+                />
+              </div>
             </div>
-            <div className="field">
-              <img
-                alt=""
-                draggable={false}
-                src={require("../../../assets/drawables/send.png").default}
-                className="unselectable"
-              />
-              <p className="field-title">Amount</p>
-              <input
-                value={this.state.transactionAmount}
-                onChange={(_) => {
-                  this.setState({
-                    transactionAmount: parseInt("0" + _.target.value),
-                  });
-                }}
-                placeholder="Amount"
-                name="Amount"
-              />
-            </div>
-          </div>
-          <p
-            className="btn unselectable"
-            onClick={async () => {
-              const {
-                customerId,
-                transactionAmount,
-                transactionType,
-                date,
-              } = this.state;
-              const p = {
-                customerId: customerId,
-                transactionAmount: transactionAmount,
-                transactionType: transactionType,
-                date: date,
-              };
-              if (p.transactionType === "Deposit") {
-                await _database
-                  .ref("transactions/" + p.customerId + "/" + date)
-                  .push(p)
-                  .then(async (c) => {
+            <div
+              style={{
+                display: "flex",
+                alignSelf: "center",
+                marginBottom: "10px",
+              }}
+            >
+              <p
+                className="btn unselectable"
+                onClick={async () => {
+                  const {
+                    customerId,
+                    transactionAmount,
+                    transactionType,
+                    date,
+                  } = this.state;
+                  const p = {
+                    customerId: customerId,
+                    transactionAmount: transactionAmount,
+                    transactionType: transactionType,
+                    date: date,
+                  };
+                  if (p.transactionType === "Deposit") {
+                    await _database
+                      .ref("transactions/" + p.customerId + "/" + date)
+                      .push(p)
+                      .then(async (c) => {
+                        await _database
+                          .ref("customers/" + p.customerId + "/customerBalance")
+                          .once("value", async (c) => {
+                            var amount = p.transactionAmount;
+                            if (c.val()) {
+                              amount = amount + parseInt(c.val());
+                            }
+                            c.ref.set(amount);
+                            this.props.close();
+                            this.props.showTimedToast("Deposit Succesfull");
+                          });
+                      });
+                  } else {
                     await _database
                       .ref("customers/" + p.customerId + "/customerBalance")
                       .once("value", async (c) => {
                         var amount = p.transactionAmount;
-                        if (c.val()) {
-                          amount = amount + parseInt(c.val());
-                        }
-                        c.ref.set(amount);
-                        this.props.close();
-                        this.props.showTimedToast("Deposit Succesfull");
-                      });
-                  });
-              } else {
-                await _database
-                  .ref("customers/" + p.customerId + "/customerBalance")
-                  .once("value", async (c) => {
-                    var amount = p.transactionAmount;
-                    if (c.val() && amount <= parseInt(c.val())) {
-                      await _database
-                        .ref("transactions/" + p.customerId + "/" + date)
-                        .push(p)
-                        .then(async (c) => {
+                        if (c.val() && amount <= parseInt(c.val())) {
                           await _database
-                            .ref(
-                              "customers/" + p.customerId + "/customerBalance"
-                            )
-                            .once("value", async (c) => {
-                              var amount = p.transactionAmount;
-                              if (c.val()) {
-                                amount = parseInt(c.val()) - amount;
-                              }
-                              c.ref.set(amount);
-                              this.props.close();
-                              this.props.showTimedToast(
-                                "Withdrawall Succesfull"
-                              );
+                            .ref("transactions/" + p.customerId + "/" + date)
+                            .push(p)
+                            .then(async (c) => {
+                              await _database
+                                .ref(
+                                  "customers/" +
+                                    p.customerId +
+                                    "/customerBalance"
+                                )
+                                .once("value", async (c) => {
+                                  var amount = p.transactionAmount;
+                                  if (c.val()) {
+                                    amount = parseInt(c.val()) - amount;
+                                  }
+                                  c.ref.set(amount);
+                                  this.props.close();
+                                  this.props.showTimedToast(
+                                    "Withdrawall Succesfull"
+                                  );
+                                });
                             });
-                        });
-                    } else {
-                      this.props.showTimedToast("Insufficient Funds");
-                    }
-                  });
-              }
-            }}
-          >
-            {this.state.transactionType}
-          </p>
-          <div style={{ marginTop: "10px" }} />
+                        } else {
+                          this.props.showTimedToast("Insufficient Funds");
+                        }
+                      });
+                  }
+                }}
+              >
+                {this.state.transactionType}
+              </p>
+              <p
+                className="btn  unselectable"
+                onClick={async () => {
+                  await setTimeout(() => {
+                    this.setState({ exit: true });
+                    this.props.close();
+                  }, 100);
+                }}
+              >
+                Close
+              </p>
+            </div>
+            <div style={{ marginTop: "10px" }} />
+          </div>
         </div>
       </div>
     );

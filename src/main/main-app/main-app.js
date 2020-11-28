@@ -40,7 +40,7 @@ export default class MainApp extends Component {
   }
   async validatePin() {
     if (this.state.inputPin.replace("x", "") === this.state.userPin) {
-      this.props.showTimedToast("Succesfull");
+      this.props.showTimedToast("Authentication Success");
       this.setState({
         inputPin: "",
         displayPin: "",
@@ -49,7 +49,7 @@ export default class MainApp extends Component {
         this.setState({ auth: true });
       }, 500);
     } else {
-      this.props.showTimedToast("Try Again");
+      this.props.showTimedToast("Invalid Entry");
       this.setState({
         inputPin: "",
         displayPin: "",
@@ -63,132 +63,151 @@ export default class MainApp extends Component {
           <Loader />
         ) : (
           <>
-            <img
-              src={require("../../assets/drawables/logo.png").default}
-              alt=""
-              className="logo unselectable"
-            />
-            <p className="sub-title unselectable">Enter pin</p>
-            <div className="pin-pad">
-              <div className="pad">
-                <div className="circle">
-                  <h3> {this.state.displayPin} </h3>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                marginRight: "10px",
+              }}
+            >
+              <img
+                src={require("../../assets/drawables/logo.png").default}
+                alt=""
+                className="logo unselectable"
+              />
+              <p className="title unselectable">Auth</p>
+              <p className="sub-title unselectable">Enter pin to sign in</p>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                marginLeft: "10px",
+              }}
+            >
+              <div className="pin-pad">
+                <div className="pad">
+                  <div className="circle">
+                    <h3> {this.state.displayPin} </h3>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="input-pad">
-              <div className="pad">
-                <div className="line">
-                  <p
-                    className="unselectable"
-                    onClick={async () => {
-                      await this.addValue("1");
-                    }}
-                  >
-                    1
-                  </p>
-                  <p
-                    className="unselectable"
-                    onClick={async () => {
-                      await this.addValue("2");
-                    }}
-                  >
-                    2
-                  </p>
-                  <p
-                    className="unselectable"
-                    onClick={async () => {
-                      await this.addValue("3");
-                    }}
-                  >
-                    3
-                  </p>
-                </div>
-                <div className="line">
-                  <p
-                    className="unselectable"
-                    onClick={async () => {
-                      await this.addValue("4");
-                    }}
-                  >
-                    4
-                  </p>
-                  <p
-                    className="unselectable"
-                    onClick={async () => {
-                      await this.addValue("5");
-                    }}
-                  >
-                    5
-                  </p>
-                  <p
-                    className="unselectable"
-                    onClick={async () => {
-                      await this.addValue("6");
-                    }}
-                  >
-                    6
-                  </p>
-                </div>
-                <div className="line">
-                  <p
-                    className="unselectable"
-                    onClick={async () => {
-                      await this.addValue("7");
-                    }}
-                  >
-                    7
-                  </p>
-                  <p
-                    className="unselectable"
-                    onClick={async () => {
-                      await this.addValue("8");
-                    }}
-                  >
-                    8
-                  </p>
-                  <p
-                    className="unselectable"
-                    onClick={async () => {
-                      await this.addValue("9");
-                    }}
-                  >
-                    9
-                  </p>
-                </div>
-                <div className="line">
-                  <p
-                    className="unselectable"
-                    onClick={() => {
-                      this.setState({ inputPin: "", displayPin: "" });
-                    }}
-                  >
-                    Clear
-                  </p>
-                  <p
-                    className="unselectable"
-                    onClick={async () => {
-                      await this.addValue("0");
-                    }}
-                  >
-                    0
-                  </p>
-                  <p
-                    className="unselectable"
-                    onClick={async () => {
-                      const disp = this.state.displayPin;
-                      const pin = this.state.inputPin;
-                      await this.setState({
-                        displayPin: disp.substring(0, disp.length - 1),
-                        inputPin: pin.substring(0, pin.length - 1),
-                      });
-                    }}
-                  >
-                    Del
-                  </p>
+              <div className="input-pad">
+                <div className="pad">
+                  <div className="line">
+                    <p
+                      className="unselectable"
+                      onClick={async () => {
+                        await this.addValue("1");
+                      }}
+                    >
+                      1
+                    </p>
+                    <p
+                      className="unselectable"
+                      onClick={async () => {
+                        await this.addValue("2");
+                      }}
+                    >
+                      2
+                    </p>
+                    <p
+                      className="unselectable"
+                      onClick={async () => {
+                        await this.addValue("3");
+                      }}
+                    >
+                      3
+                    </p>
+                  </div>
+                  <div className="line">
+                    <p
+                      className="unselectable"
+                      onClick={async () => {
+                        await this.addValue("4");
+                      }}
+                    >
+                      4
+                    </p>
+                    <p
+                      className="unselectable"
+                      onClick={async () => {
+                        await this.addValue("5");
+                      }}
+                    >
+                      5
+                    </p>
+                    <p
+                      className="unselectable"
+                      onClick={async () => {
+                        await this.addValue("6");
+                      }}
+                    >
+                      6
+                    </p>
+                  </div>
+                  <div className="line">
+                    <p
+                      className="unselectable"
+                      onClick={async () => {
+                        await this.addValue("7");
+                      }}
+                    >
+                      7
+                    </p>
+                    <p
+                      className="unselectable"
+                      onClick={async () => {
+                        await this.addValue("8");
+                      }}
+                    >
+                      8
+                    </p>
+                    <p
+                      className="unselectable"
+                      onClick={async () => {
+                        await this.addValue("9");
+                      }}
+                    >
+                      9
+                    </p>
+                  </div>
+                  <div className="line">
+                    <p
+                      className="unselectable"
+                      onClick={() => {
+                        this.setState({ inputPin: "", displayPin: "" });
+                      }}
+                    >
+                      Clear
+                    </p>
+                    <p
+                      className="unselectable"
+                      onClick={async () => {
+                        await this.addValue("0");
+                      }}
+                    >
+                      0
+                    </p>
+                    <p
+                      className="unselectable"
+                      onClick={async () => {
+                        const disp = this.state.displayPin;
+                        const pin = this.state.inputPin;
+                        await this.setState({
+                          displayPin: disp.substring(0, disp.length - 1),
+                          inputPin: pin.substring(0, pin.length - 1),
+                        });
+                      }}
+                    >
+                      Del
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            </div>{" "}
           </>
         )}
       </div>
